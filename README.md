@@ -1,5 +1,5 @@
 # Deribit Options Downloader
-A package which can download all BTC and ETH option chain data on Deribit.
+A package which can download all current BTC and ETH option chain data on Deribit.
 
 ## Example
 ``` python
