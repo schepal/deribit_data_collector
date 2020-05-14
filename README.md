@@ -17,7 +17,9 @@ date                    btc_hist_vol
 2020-05-14 00:00:00     95.572422
 2020-05-14 01:00:00     95.564853
 
-# Get all option prices and relevant statistics. This may take several minutes so you may want to set_csv=True if you wish to avoid having to re-download the data. 
+
+# Get all option prices and relevant statistics. This may take several minutes so you may
+# want to set_csv=True if you wish to avoid having to re-download the data.
 
 >>> df = data.get_options_stats(save_csv=False)
 >>> df.columns
