@@ -1,5 +1,5 @@
-# Deribit Data Scraper
-A library that can be used to download the entire BTC and ETH option chain data on Deribit.
+# Deribit Options Downloader
+A package which can download all BTC and ETH option chain data on Deribit.
 
 ## Example
 ``` python
