@@ -40,3 +40,10 @@ date                    btc_hist_vol
     3	BTC-14MAY20-8875-C	 0.0410	     90.65	      24.7
     4	BTC-25SEP20-9000-P	 0.1770	     83.37	      266.9
 ```
+
+### Dependencies
+
+- pandas==1.0.3
+- requests==2.21.0
+- numpy==1.17.3
+- tqdm==4.38.0
