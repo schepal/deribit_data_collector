@@ -1,13 +1,13 @@
 import requests
 import pandas as pd
 import numpy as np
-from tqdm import tqdm
+from datetime import datetime
+from concurrent.futures import ThreadPoolExecutor
 
 class Options:
-
     def __init__(self, currency="BTC"):
         """
-        Initializing Options.
+        Initializing `Options` class.
 
         Parameters
         ----------
@@ -18,10 +18,10 @@ class Options:
         Example
         ---------
         >>> import deribit_data as dm
-        >>> data = dm.Options(currency = "ETH")
+        >>> data = dm.Options(currency = "BTC")
         """
         self.url = 'https://www.deribit.com/api/v2/public/'
-        self.currency = currency.lower()
+        self.currency = str.lower(currency)
 
     def get_hist_vol(self, save_csv=False):
         """
@@ -64,7 +64,7 @@ class Options:
 
     def get_options_list(self):
         """
-        This method is used to retrive the option type and instrument name.
+        This method is used to retrieve the option type and instrument name.
         The output of this method is used as an input to the `get_option_stats`
         method.
 
@@ -91,15 +91,53 @@ class Options:
         cols = ['expiration_timestamp', 'option_type', 'instrument_name', 'strike']
         return df[cols]
 
-    def get_options_stats(self, save_csv=False):
+    def get_option_urls(self):
+        """
+        Used to retrieve the URL links for all options which are inputted to the
+        `collect_data` method.
+
+        Returns
+        -------------
+        list:
+            A dataframe with relevant information which is fed into the
+            `get_option_stats` method.
+
+        Example
+        -------------
+        >>> data.get_options_urls()
+        ['https://www.deribit.com/api/v2/public/get_order_book?instrument_name=BTC-4SEP20-13250-P',
+        'https://www.deribit.com/api/v2/public/get_order_book?instrument_name=BTC-26MAR21-8000-P',
+        ....]
+        """
+        url_storage = []
+        options_list = self.get_options_list()
+        request_url = self.url + 'get_order_book?instrument_name='
+        for option in range(len(options_list)):
+            data = request_url + options_list.instrument_name.values[option]
+            url_storage.append(data)
+        return url_storage
+
+
+    def request_get(self, url):
+        """
+        An intermediate function used in conjunction with the `collect_data` method.
+        """
+        page = requests.get(url)
+        return page.json()['result']
+
+
+    def collect_data(self, max_workers=20, save_csv=False):
         """
         Retrieves the price, implied volatility, volume, open interest, greeks
         and other relevant data for all options of the selected asset.
 
         Parameter:
         ------------
+        max_workers: integer
+            Select the maximum number of threads to execute calls asynchronously (Default 20)
+
         save_csv: boolean
-            Select True to save the options data to a csv file
+            Select True to save the options data to a csv file (Default False)
 
         Returns
         -------------
@@ -107,11 +145,11 @@ class Options:
             A dataframe with corresponding statistics for each option
 
         csv:
-            A csv file will be saved if save_csv is set to True
+            A csv file will be saved if save_csv is set to True (Default is False)
 
         Example
         -------------
-        >>> df = data.get_options_stats()
+        >>> df = data.collect_data()
         >>> df.columns
         Index(['expiration_timestamp', 'option_type', 'instrument_name', 'strike',
                'underlying_price', 'underlying_index', 'timestamp', 'stats', 'state',
@@ -130,15 +168,15 @@ class Options:
         3	BTC-14MAY20-8875-C	0.0410	90.65	24.7
         4	BTC-25SEP20-9000-P	0.1770	83.37	266.9
         """
-        storage = []
-        options_list = self.get_options_list()
-        iv_url = self.url + 'get_order_book?instrument_name='
-        for option in tqdm(range(len(options_list))):
-            data = iv_url + options_list.instrument_name.values[option]
-            storage.append(requests.get(data).json()['result'])
-        iv = pd.DataFrame(storage)
-        df = pd.concat([options_list, iv], axis=1)
-        df = df.loc[:,~df.columns.duplicated()]
-        if save_csv == True:
-            df.to_csv("options_data.csv")
+        raw_data = []
+        pool = ThreadPoolExecutor(max_workers=20)
+        print("Collecting data...")
+        for asset in pool.map(self.request_get, self.get_option_urls()):
+            raw_data.append(asset)
+        df = pd.DataFrame(raw_data)
+        df['option_type'] = [df.instrument_name[i][-1] for i in range(len(df))]
+        df = df.loc[:, ~df.columns.duplicated()]
+        label = datetime.now().strftime(str(self.currency) + "_options_data" +'-%Y_%b_%d-%H_%M_%S.csv')
+        df.to_csv(label)
+        print("Data Collected")
         return df
