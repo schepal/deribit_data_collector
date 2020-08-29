@@ -21,21 +21,11 @@ date                    btc_hist_vol
 # Get all option prices and relevant statistics. This may take several minutes so you may
 # want to set_csv=True if you wish to avoid having to re-download the data.
 
->>> df = data.collect_data(save_csv=False)
->>> df.columns
-    Index(['expiration_timestamp', 'option_type', 'instrument_name', 'strike',
-           'underlying_price', 'underlying_index', 'timestamp', 'stats', 'state',
-           'settlement_price', 'open_interest', 'min_price', 'max_price',
-           'mark_price', 'mark_iv', 'last_price', 'interest_rate',
-           'instrument_name', 'index_price', 'greeks', 'estimated_delivery_price',
-           'change_id', 'bids', 'bid_iv', 'best_bid_price', 'best_bid_amount',
-           'best_ask_price', 'best_ask_amount', 'asks', 'ask_iv'],
-            dtype='object')
-
+>>> df = btc_data.collect_data(save_csv=False)
 >>> df[['instrument_name', 'last_price', 'mark_iv', 'open_interest']].head()
       instrument_name	    last_price  mark_iv     open_interest
     0	BTC-22MAY20-9250-P	 0.0460	     77.72	      138.8
-    1	BTC-22MAY20-12000-C	 0.0050	     112.28     	110.6
+    1	BTC-22MAY20-12000-C	 0.0050	     112.28       110.6
     2	BTC-26JUN20-8000-C	 0.1825	     90.26	      771.0
     3	BTC-14MAY20-8875-C	 0.0410	     90.65	      24.7
     4	BTC-25SEP20-9000-P	 0.1770	     83.37	      266.9
