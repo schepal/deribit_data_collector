@@ -24,11 +24,11 @@ date                    btc_hist_vol
 >>> df = btc_data.collect_data(save_csv=False)
 >>> df[['instrument_name', 'last_price', 'mark_iv', 'open_interest']].head()
       instrument_name	    last_price  mark_iv     open_interest
-    0	BTC-22MAY20-9250-P	 0.0460	     77.72	      138.8
-    1	BTC-22MAY20-12000-C	 0.0050	     112.28       110.6
-    2	BTC-26JUN20-8000-C	 0.1825	     90.26	      771.0
-    3	BTC-14MAY20-8875-C	 0.0410	     90.65	      24.7
-    4	BTC-25SEP20-9000-P	 0.1770	     83.37	      266.9
+    0	BTC-22MAY20-9250-P	 0.0460	     77.72	     138.8
+    1	BTC-22MAY20-12000-C	 0.0050	     112.28          110.6
+    2	BTC-26JUN20-8000-C	 0.1825	     90.26	     771.0
+    3	BTC-14MAY20-8875-C	 0.0410	     90.65	     24.7
+    4	BTC-25SEP20-9000-P	 0.1770	     83.37	     266.9
 ```
 
 ### External Dependencies
