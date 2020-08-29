@@ -18,8 +18,7 @@ date                    btc_hist_vol
 2020-05-14 01:00:00     95.564853
 
 
-# Get all option prices and relevant statistics. This may take several minutes so you may
-# want to set_csv=True if you wish to avoid having to re-download the data.
+# Get all option prices and relevant statistics - this should take less than 30 seconds.
 
 >>> df = btc_data.collect_data(save_csv=False)
 >>> df[['instrument_name', 'last_price', 'mark_iv', 'open_interest']].head()
